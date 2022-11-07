@@ -1,2 +1,50 @@
+import shutil
+from tkinter import *
+from tkinter import filedialog
+from pytube import YouTube
+from moviepy.editor import VideoFileClip
+from moviepy import *
 
-
+
+
+def select_path():
+    path = filedialog.askdirectory()
+    path_label.config(text=path)
+
+def download_file():
+    get_link = link_field.get()
+    user_path = path_label.cget("text")
+    screen.title('Downloading')
+    mp4_video = YouTube(get_link).streams.get_highest_resolution().download()
+    vid_clip = VideoFileClip(mp4_video)
+    vid_clip.close()
+    shutil.move(mp4_video, user_path)
+    screen.title('Download Complete!')
+
+
+
+screen = Tk()
+title = screen.title("YouTube Download")
+canvas = Canvas(screen, bg='antique white', width=500, height=500)
+canvas.pack()
+
+
+logo_img = PhotoImage(file='Screenshot_20221024_154616-removebg-preview.png')
+logo_img = logo_img.subsample(3,3)
+
+link_field = Entry(screen, bg='seashell2', width=50)
+link_Label = Label(screen,bg='antique white', text="Enter Download Link: ", font=('Times New Roman', 15))
+path_label = Label(screen, bg='antique white', text ="Select path for download", font=('Times New Roman', 15))
+select_btn = Button(screen, bg='bisque', text="Select", command=select_path)
+download_btn = Button(screen, bg='bisque', text="Download File", command=download_file)
+
+
+canvas.create_window(250,150, window=link_Label)
+canvas.create_window(250,180, window=link_field)
+canvas.create_image(250, 70, image=logo_img)
+canvas.create_window(250,270, window=path_label)
+canvas.create_window(250,330, window=select_btn)
+canvas.create_window(250, 380, window=download_btn)
+
+
+screen.mainlopp()
